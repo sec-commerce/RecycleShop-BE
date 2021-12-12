@@ -13,6 +13,10 @@ jobs:
     steps:
       - checkout
 
+      - add_ssh_keys:
+          fingerprints:
+            - "e2:6e:4a:e4:87:6d:dc:3a:76:82:ef:3a:5b:c5:fb:6d"
+
       - run:
           name: deploy
           working_directory: /
