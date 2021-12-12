@@ -17,6 +17,8 @@ jobs:
           fingerprints:
             - "80:a7:0a:4d:5a:ec:a8:8b:af:aa:b1:00:0e:0c:f4:15"
 
+      - run: ssh-keyscan cloud.kvisnia.me >> ~/.ssh/known_hosts
+
       - run:
           name: deploy
           working_directory: /
