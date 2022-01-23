@@ -75,18 +75,18 @@ export const devConfig: VendureConfig = {
         //     port: 9200,
         //     bufferUpdates: true,
         // }),
-        EmailPlugin.init({
-            devMode: true,
-            route: 'mailbox',
-            handlers: defaultEmailHandlers,
-            templatePath: path.join(__dirname, '../email-plugin/templates'),
-            outputPath: path.join(__dirname, 'test-emails'),
-            globalTemplateVars: {
-                verifyEmailAddressUrl: 'http://localhost:4201/verify',
-                passwordResetUrl: 'http://localhost:4201/reset-password',
-                changeEmailAddressUrl: 'http://localhost:4201/change-email-address',
-            },
-        }),
+        // EmailPlugin.init({
+        //     devMode: true,
+        //     route: 'mailbox',
+        //     handlers: defaultEmailHandlers,
+        //     templatePath: path.join(__dirname, '../email-plugin/templates'),
+        //     outputPath: path.join(__dirname, 'test-emails'),
+        //     globalTemplateVars: {
+        //         verifyEmailAddressUrl: 'http://localhost:4201/verify',
+        //         passwordResetUrl: 'http://localhost:4201/reset-password',
+        //         changeEmailAddressUrl: 'http://localhost:4201/change-email-address',
+        //     },
+        // }),
         AdminUiPlugin.init({
             route: 'admin',
             port: 5001,
