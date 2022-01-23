@@ -5,7 +5,15 @@ import { DataService } from '../../data/providers/data.service';
 import { LocaleBasePipe } from './locale-base.pipe';
 
 /**
+ * @description
  * Displays a human-readable name for a given ISO 4217 currency code.
+ *
+ * @example
+ * ```HTML
+ * {{ order.currencyCode | localeCurrencyName }}
+ * ```
+ *
+ * @docsCategory pipes
  */
 @Pipe({
     name: 'localeCurrencyName',
@@ -24,7 +32,7 @@ export class LocaleCurrencyNamePipe extends LocaleBasePipe implements PipeTransf
         }
         let name = '';
         let symbol = '';
-        const activeLocale = typeof locale === 'string' ? locale : this.locale ?? 'en';
+        const activeLocale = this.getActiveLocale(locale);
 
         // Awaiting TS types for this API: https://github.com/microsoft/TypeScript/pull/44022/files
         const DisplayNames = (Intl as any).DisplayNames;
@@ -35,11 +43,13 @@ export class LocaleCurrencyNamePipe extends LocaleBasePipe implements PipeTransf
             }).of(value);
         }
         if (display === 'full' || display === 'symbol') {
-            const parts = (new Intl.NumberFormat(activeLocale, {
-                style: 'currency',
-                currency: value,
-                currencyDisplay: 'symbol',
-            }) as any).formatToParts();
+            const parts = (
+                new Intl.NumberFormat(activeLocale, {
+                    style: 'currency',
+                    currency: value,
+                    currencyDisplay: 'symbol',
+                }) as any
+            ).formatToParts();
 
             symbol = parts.find(p => p.type === 'currency')?.value || value;
         }

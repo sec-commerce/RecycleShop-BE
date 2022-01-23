@@ -19,7 +19,7 @@ A UI extension is an [Angular module](https://angular.io/guide/ngmodules) which 
 
 ## Use Your Favourite Framework
 
-The Vendure Admin UI is build with Angular, and writing UI extensions in Angular is seamless and powerful. But if you are not familiar with Angular, that's no problem! You can write UI extensions using **React**, **Vue**, or **any other** web technology of choice!
+The Vendure Admin UI is built with Angular, and writing UI extensions in Angular is seamless and powerful. But if you are not familiar with Angular, that's no problem! You can write UI extensions using **React**, **Vue**, or **any other** web technology of choice!
 
 * [UI extensions in Angular]({{< relref "using-angular" >}})
 * [UI extensions in other frameworks]({{< relref "using-other-frameworks" >}})
@@ -30,7 +30,7 @@ Angular uses the concept of modules ([NgModules](https://angular.io/guide/ngmodu
 
 When creating your UI extensions, you can set your module to be either `lazy` or `shared`. Shared modules are loaded _eagerly_, i.e. their code is bundled up with the main app and loaded as soon as the app loads. 
 
-As a rule, modules defining new routes should be lazily loaded (so that the code is only loaded once that route is activated), and modules defining [new navigations items]({{< relref "adding-navigation-items" >}}) and [CustomField controls]({{< relref "custom-field-controls" >}}) should be set to `shared`.
+As a rule, modules defining new routes should be lazily loaded (so that the code is only loaded once that route is activated), and modules defining [new navigations items]({{< relref "adding-navigation-items" >}}) and [custom form input]({{< relref "custom-form-inputs" >}}) should be set to `shared`.
 
 ## Dev mode
 

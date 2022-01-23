@@ -127,8 +127,10 @@ export type BooleanCustomFieldConfig = CustomField & {
     readonly?: Maybe<Scalars['Boolean']>;
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
+/** Operators for filtering on a Boolean field */
 export type BooleanOperators = {
     eq?: Maybe<Scalars['Boolean']>;
 };
@@ -181,6 +183,7 @@ export type CollectionBreadcrumb = {
 };
 
 export type CollectionFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -298,6 +301,7 @@ export type Country = Node & {
     name: Scalars['String'];
     enabled: Scalars['Boolean'];
     translations: Array<CountryTranslation>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type CountryList = PaginatedList & {
@@ -711,6 +715,7 @@ export type CustomField = {
     readonly?: Maybe<Scalars['Boolean']>;
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type CustomFieldConfig =
@@ -744,6 +749,7 @@ export type CustomerOrdersArgs = {
 };
 
 export type CustomerFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     title?: Maybe<StringOperators>;
@@ -760,6 +766,7 @@ export type CustomerGroup = Node & {
     updatedAt: Scalars['DateTime'];
     name: Scalars['String'];
     customers: CustomerList;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type CustomerGroupCustomersArgs = {
@@ -796,6 +803,7 @@ export type CustomerSortParameter = {
     emailAddress?: Maybe<SortOrder>;
 };
 
+/** Operators for filtering on a DateTime field */
 export type DateOperators = {
     eq?: Maybe<Scalars['DateTime']>;
     before?: Maybe<Scalars['DateTime']>;
@@ -825,6 +833,7 @@ export type DateTimeCustomFieldConfig = CustomField & {
     min?: Maybe<Scalars['String']>;
     max?: Maybe<Scalars['String']>;
     step?: Maybe<Scalars['Int']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type DeletionResponse = {
@@ -906,6 +915,7 @@ export type Facet = Node & {
 };
 
 export type FacetFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -1007,6 +1017,7 @@ export type FloatCustomFieldConfig = CustomField & {
     min?: Maybe<Scalars['Float']>;
     max?: Maybe<Scalars['Float']>;
     step?: Maybe<Scalars['Float']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type Fulfillment = Node & {
@@ -1037,6 +1048,7 @@ export type HistoryEntry = Node & {
 };
 
 export type HistoryEntryFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     type?: Maybe<StringOperators>;
@@ -1093,6 +1105,14 @@ export enum HistoryEntryType {
     ORDER_COUPON_REMOVED = 'ORDER_COUPON_REMOVED',
     ORDER_MODIFIED = 'ORDER_MODIFIED',
 }
+
+/** Operators for filtering on an ID field */
+export type IdOperators = {
+    eq?: Maybe<Scalars['String']>;
+    notEq?: Maybe<Scalars['String']>;
+    in?: Maybe<Array<Scalars['String']>>;
+    notIn?: Maybe<Array<Scalars['String']>>;
+};
 
 /**
  * Retured if the token used to change a Customer's email address is valid, but has
@@ -1151,6 +1171,7 @@ export type IntCustomFieldConfig = CustomField & {
     min?: Maybe<Scalars['Int']>;
     max?: Maybe<Scalars['Int']>;
     step?: Maybe<Scalars['Int']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 /** Returned if the user authentication credentials are not valid */
@@ -1499,6 +1520,7 @@ export type LocaleStringCustomFieldConfig = CustomField & {
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
     pattern?: Maybe<Scalars['String']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type LocalizedString = {
@@ -1769,6 +1791,7 @@ export type NotVerifiedError = ErrorResult & {
     message: Scalars['String'];
 };
 
+/** Operators for filtering on a Int or Float field */
 export type NumberOperators = {
     eq?: Maybe<Scalars['Float']>;
     lt?: Maybe<Scalars['Float']>;
@@ -1860,6 +1883,7 @@ export type OrderAddress = {
 };
 
 export type OrderFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     orderPlacedAt?: Maybe<DateOperators>;
@@ -2121,7 +2145,7 @@ export type PaymentFailedError = ErrorResult & {
 
 /** Passed as input to the `addPaymentToOrder` mutation. */
 export type PaymentInput = {
-    /** This field should correspond to the `code` property of a PaymentMethodHandler. */
+    /** This field should correspond to the `code` property of a PaymentMethod. */
     method: Scalars['String'];
     /**
      * This field should contain arbitrary data passed to the specified PaymentMethodHandler's `createPayment()` method
@@ -2129,6 +2153,20 @@ export type PaymentInput = {
      * data generated by the payment provider.
      */
     metadata: Scalars['JSON'];
+};
+
+export type PaymentMethod = Node & {
+    __typename?: 'PaymentMethod';
+    id: Scalars['ID'];
+    createdAt: Scalars['DateTime'];
+    updatedAt: Scalars['DateTime'];
+    name: Scalars['String'];
+    code: Scalars['String'];
+    description: Scalars['String'];
+    enabled: Scalars['Boolean'];
+    checker?: Maybe<ConfigurableOperation>;
+    handler: ConfigurableOperation;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type PaymentMethodQuote = {
@@ -2139,6 +2177,7 @@ export type PaymentMethodQuote = {
     description: Scalars['String'];
     isEligible: Scalars['Boolean'];
     eligibilityMessage?: Maybe<Scalars['String']>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 /**
@@ -2355,6 +2394,7 @@ export type ProductVariantListArgs = {
 };
 
 export type ProductFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -2472,6 +2512,8 @@ export type ProductVariant = Node & {
 };
 
 export type ProductVariantFilterParameter = {
+    id?: Maybe<IdOperators>;
+    productId?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -2536,6 +2578,7 @@ export type Promotion = Node & {
     enabled: Scalars['Boolean'];
     conditions: Array<ConfigurableOperation>;
     actions: Array<ConfigurableOperation>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type PromotionList = PaginatedList & {
@@ -2675,6 +2718,7 @@ export type RelationCustomFieldConfig = CustomField & {
     nullable?: Maybe<Scalars['Boolean']>;
     entity: Scalars['String'];
     scalarFields: Array<Scalars['String']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type RemoveOrderItemsResult = Order | OrderModificationError;
@@ -2691,7 +2735,8 @@ export type ResetPasswordResult =
     | CurrentUser
     | PasswordResetTokenInvalidError
     | PasswordResetTokenExpiredError
-    | NativeAuthStrategyError;
+    | NativeAuthStrategyError
+    | NotVerifiedError;
 
 export type Role = Node & {
     __typename?: 'Role';
@@ -2826,6 +2871,7 @@ export type ShippingMethodQuote = {
     description: Scalars['String'];
     /** Any optional metadata returned by the ShippingCalculator in the ShippingCalculationResult */
     metadata?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type ShippingMethodTranslation = {
@@ -2862,6 +2908,7 @@ export type StringCustomFieldConfig = CustomField & {
     nullable?: Maybe<Scalars['Boolean']>;
     pattern?: Maybe<Scalars['String']>;
     options?: Maybe<Array<StringFieldOption>>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type StringFieldOption = {
@@ -2870,6 +2917,7 @@ export type StringFieldOption = {
     label?: Maybe<Array<LocalizedString>>;
 };
 
+/** Operators for filtering on a String field */
 export type StringOperators = {
     eq?: Maybe<Scalars['String']>;
     notEq?: Maybe<Scalars['String']>;
@@ -2920,6 +2968,7 @@ export type TaxCategory = Node & {
     updatedAt: Scalars['DateTime'];
     name: Scalars['String'];
     isDefault: Scalars['Boolean'];
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type TaxLine = {
@@ -2939,6 +2988,7 @@ export type TaxRate = Node & {
     category: TaxCategory;
     zone: Zone;
     customerGroup?: Maybe<CustomerGroup>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type TaxRateList = PaginatedList & {
@@ -2957,6 +3007,7 @@ export type TextCustomFieldConfig = CustomField & {
     readonly?: Maybe<Scalars['Boolean']>;
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type TransitionOrderToStateResult = Order | OrderStateTransitionError;
@@ -3052,4 +3103,5 @@ export type Zone = Node & {
     updatedAt: Scalars['DateTime'];
     name: Scalars['String'];
     members: Array<Country>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
