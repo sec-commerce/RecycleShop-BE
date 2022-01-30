@@ -50,7 +50,7 @@ import { TaxRateService } from './tax-rate.service';
  */
 @Injectable()
 export class ProductService {
-    private readonly relations = ['featuredAsset',  'user', 'assets', 'channels', 'facetValues', 'facetValues.facet'];
+    private readonly relations = ['featuredAsset', 'assets', 'channels', 'facetValues', 'facetValues.facet'];
 
     constructor(
         private connection: TransactionalConnection,
@@ -178,7 +178,6 @@ export class ProductService {
 
     async create(ctx: RequestContext, input: CreateProductInput): Promise<Translated<Product>> {
         await this.slugValidator.validateSlugs(ctx, input, ProductTranslation);
-        input.user = ctx.activeUserId;
         const product = await this.translatableSaver.create({
             ctx,
             input,
