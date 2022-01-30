@@ -671,7 +671,6 @@ export type CreatePaymentMethodInput = {
 };
 
 export type CreateProductInput = {
-  user?: Scalars['ID'];
   featuredAssetId?: Maybe<Scalars['ID']>;
   enabled?: Maybe<Scalars['Boolean']>;
   assetIds?: Maybe<Array<Scalars['ID']>>;
