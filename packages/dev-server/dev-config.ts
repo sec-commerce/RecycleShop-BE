@@ -16,6 +16,8 @@ import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import path from 'path';
 import { ConnectionOptions } from 'typeorm';
 
+import { ProductUserPlugin } from '../addUserToProduct/addUserToproduct';
+
 /**
  * Config settings used during development
  */
@@ -87,6 +89,7 @@ export const devConfig: VendureConfig = {
         //         changeEmailAddressUrl: 'http://localhost:4201/change-email-address',
         //     },
         // }),
+        ProductUserPlugin,
         AdminUiPlugin.init({
             route: 'admin',
             port: 5001,
