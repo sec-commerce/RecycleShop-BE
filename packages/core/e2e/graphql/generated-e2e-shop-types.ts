@@ -120,8 +120,10 @@ export type BooleanCustomFieldConfig = CustomField & {
     readonly?: Maybe<Scalars['Boolean']>;
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
+/** Operators for filtering on a Boolean field */
 export type BooleanOperators = {
     eq?: Maybe<Scalars['Boolean']>;
 };
@@ -171,6 +173,7 @@ export type CollectionBreadcrumb = {
 };
 
 export type CollectionFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -279,6 +282,7 @@ export type Country = Node & {
     name: Scalars['String'];
     enabled: Scalars['Boolean'];
     translations: Array<CountryTranslation>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type CountryList = PaginatedList & {
@@ -685,6 +689,7 @@ export type CustomField = {
     readonly?: Maybe<Scalars['Boolean']>;
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type CustomFieldConfig =
@@ -717,6 +722,7 @@ export type CustomerOrdersArgs = {
 };
 
 export type CustomerFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     title?: Maybe<StringOperators>;
@@ -732,6 +738,7 @@ export type CustomerGroup = Node & {
     updatedAt: Scalars['DateTime'];
     name: Scalars['String'];
     customers: CustomerList;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type CustomerGroupCustomersArgs = {
@@ -767,6 +774,7 @@ export type CustomerSortParameter = {
     emailAddress?: Maybe<SortOrder>;
 };
 
+/** Operators for filtering on a DateTime field */
 export type DateOperators = {
     eq?: Maybe<Scalars['DateTime']>;
     before?: Maybe<Scalars['DateTime']>;
@@ -795,6 +803,7 @@ export type DateTimeCustomFieldConfig = CustomField & {
     min?: Maybe<Scalars['String']>;
     max?: Maybe<Scalars['String']>;
     step?: Maybe<Scalars['Int']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type DeletionResponse = {
@@ -872,6 +881,7 @@ export type Facet = Node & {
 };
 
 export type FacetFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -967,6 +977,7 @@ export type FloatCustomFieldConfig = CustomField & {
     min?: Maybe<Scalars['Float']>;
     max?: Maybe<Scalars['Float']>;
     step?: Maybe<Scalars['Float']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type Fulfillment = Node & {
@@ -995,6 +1006,7 @@ export type HistoryEntry = Node & {
 };
 
 export type HistoryEntryFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     type?: Maybe<StringOperators>;
@@ -1051,6 +1063,14 @@ export enum HistoryEntryType {
     ORDER_MODIFIED = 'ORDER_MODIFIED',
 }
 
+/** Operators for filtering on an ID field */
+export type IdOperators = {
+    eq?: Maybe<Scalars['String']>;
+    notEq?: Maybe<Scalars['String']>;
+    in?: Maybe<Array<Scalars['String']>>;
+    notIn?: Maybe<Array<Scalars['String']>>;
+};
+
 /**
  * Retured if the token used to change a Customer's email address is valid, but has
  * expired according to the `verificationTokenDuration` setting in the AuthOptions.
@@ -1102,6 +1122,7 @@ export type IntCustomFieldConfig = CustomField & {
     min?: Maybe<Scalars['Int']>;
     max?: Maybe<Scalars['Int']>;
     step?: Maybe<Scalars['Int']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 /** Returned if the user authentication credentials are not valid */
@@ -1448,6 +1469,7 @@ export type LocaleStringCustomFieldConfig = CustomField & {
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
     pattern?: Maybe<Scalars['String']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type LocalizedString = {
@@ -1711,6 +1733,7 @@ export type NotVerifiedError = ErrorResult & {
     message: Scalars['String'];
 };
 
+/** Operators for filtering on a Int or Float field */
 export type NumberOperators = {
     eq?: Maybe<Scalars['Float']>;
     lt?: Maybe<Scalars['Float']>;
@@ -1800,6 +1823,7 @@ export type OrderAddress = {
 };
 
 export type OrderFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     orderPlacedAt?: Maybe<DateOperators>;
@@ -2047,7 +2071,7 @@ export type PaymentFailedError = ErrorResult & {
 
 /** Passed as input to the `addPaymentToOrder` mutation. */
 export type PaymentInput = {
-    /** This field should correspond to the `code` property of a PaymentMethodHandler. */
+    /** This field should correspond to the `code` property of a PaymentMethod. */
     method: Scalars['String'];
     /**
      * This field should contain arbitrary data passed to the specified PaymentMethodHandler's `createPayment()` method
@@ -2057,6 +2081,19 @@ export type PaymentInput = {
     metadata: Scalars['JSON'];
 };
 
+export type PaymentMethod = Node & {
+    id: Scalars['ID'];
+    createdAt: Scalars['DateTime'];
+    updatedAt: Scalars['DateTime'];
+    name: Scalars['String'];
+    code: Scalars['String'];
+    description: Scalars['String'];
+    enabled: Scalars['Boolean'];
+    checker?: Maybe<ConfigurableOperation>;
+    handler: ConfigurableOperation;
+    customFields?: Maybe<Scalars['JSON']>;
+};
+
 export type PaymentMethodQuote = {
     id: Scalars['ID'];
     code: Scalars['String'];
@@ -2064,6 +2101,7 @@ export type PaymentMethodQuote = {
     description: Scalars['String'];
     isEligible: Scalars['Boolean'];
     eligibilityMessage?: Maybe<Scalars['String']>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 /**
@@ -2278,6 +2316,7 @@ export type ProductVariantListArgs = {
 };
 
 export type ProductFilterParameter = {
+    id?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -2388,6 +2427,8 @@ export type ProductVariant = Node & {
 };
 
 export type ProductVariantFilterParameter = {
+    id?: Maybe<IdOperators>;
+    productId?: Maybe<IdOperators>;
     createdAt?: Maybe<DateOperators>;
     updatedAt?: Maybe<DateOperators>;
     languageCode?: Maybe<StringOperators>;
@@ -2449,6 +2490,7 @@ export type Promotion = Node & {
     enabled: Scalars['Boolean'];
     conditions: Array<ConfigurableOperation>;
     actions: Array<ConfigurableOperation>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type PromotionList = PaginatedList & {
@@ -2463,7 +2505,7 @@ export type Query = {
     activeCustomer?: Maybe<Customer>;
     /**
      * The active Order. Will be `null` until an Order is created via `addItemToOrder`. Once an Order reaches the
-     * state of `PaymentApproved` or `PaymentSettled`, then that Order is no longer considered "active" and this
+     * state of `PaymentAuthorized` or `PaymentSettled`, then that Order is no longer considered "active" and this
      * query will once again return `null`.
      */
     activeOrder?: Maybe<Order>;
@@ -2471,7 +2513,7 @@ export type Query = {
     availableCountries: Array<Country>;
     /** A list of Collections available to the shop */
     collections: CollectionList;
-    /** Returns a Collection either by its id or slug. If neither 'id' nor 'slug' is speicified, an error will result. */
+    /** Returns a Collection either by its id or slug. If neither 'id' nor 'slug' is specified, an error will result. */
     collection?: Maybe<Collection>;
     /** Returns a list of eligible shipping methods based on the current active Order */
     eligibleShippingMethods: Array<ShippingMethodQuote>;
@@ -2584,6 +2626,7 @@ export type RelationCustomFieldConfig = CustomField & {
     nullable?: Maybe<Scalars['Boolean']>;
     entity: Scalars['String'];
     scalarFields: Array<Scalars['String']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type RemoveOrderItemsResult = Order | OrderModificationError;
@@ -2600,7 +2643,8 @@ export type ResetPasswordResult =
     | CurrentUser
     | PasswordResetTokenInvalidError
     | PasswordResetTokenExpiredError
-    | NativeAuthStrategyError;
+    | NativeAuthStrategyError
+    | NotVerifiedError;
 
 export type Role = Node & {
     id: Scalars['ID'];
@@ -2725,6 +2769,7 @@ export type ShippingMethodQuote = {
     description: Scalars['String'];
     /** Any optional metadata returned by the ShippingCalculator in the ShippingCalculationResult */
     metadata?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type ShippingMethodTranslation = {
@@ -2758,6 +2803,7 @@ export type StringCustomFieldConfig = CustomField & {
     nullable?: Maybe<Scalars['Boolean']>;
     pattern?: Maybe<Scalars['String']>;
     options?: Maybe<Array<StringFieldOption>>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type StringFieldOption = {
@@ -2765,6 +2811,7 @@ export type StringFieldOption = {
     label?: Maybe<Array<LocalizedString>>;
 };
 
+/** Operators for filtering on a String field */
 export type StringOperators = {
     eq?: Maybe<Scalars['String']>;
     notEq?: Maybe<Scalars['String']>;
@@ -2810,6 +2857,7 @@ export type TaxCategory = Node & {
     updatedAt: Scalars['DateTime'];
     name: Scalars['String'];
     isDefault: Scalars['Boolean'];
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type TaxLine = {
@@ -2827,6 +2875,7 @@ export type TaxRate = Node & {
     category: TaxCategory;
     zone: Zone;
     customerGroup?: Maybe<CustomerGroup>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type TaxRateList = PaginatedList & {
@@ -2843,6 +2892,7 @@ export type TextCustomFieldConfig = CustomField & {
     readonly?: Maybe<Scalars['Boolean']>;
     internal?: Maybe<Scalars['Boolean']>;
     nullable?: Maybe<Scalars['Boolean']>;
+    ui?: Maybe<Scalars['JSON']>;
 };
 
 export type TransitionOrderToStateResult = Order | OrderStateTransitionError;
@@ -2934,6 +2984,7 @@ export type Zone = Node & {
     updatedAt: Scalars['DateTime'];
     name: Scalars['String'];
     members: Array<Country>;
+    customFields?: Maybe<Scalars['JSON']>;
 };
 
 export type TestOrderFragmentFragment = Pick<
@@ -3091,7 +3142,8 @@ export type ResetPasswordMutation = {
         | CurrentUserShopFragment
         | Pick<PasswordResetTokenInvalidError, 'errorCode' | 'message'>
         | Pick<PasswordResetTokenExpiredError, 'errorCode' | 'message'>
-        | Pick<NativeAuthStrategyError, 'errorCode' | 'message'>;
+        | Pick<NativeAuthStrategyError, 'errorCode' | 'message'>
+        | Pick<NotVerifiedError, 'errorCode' | 'message'>;
 };
 
 export type RequestUpdateEmailAddressMutationVariables = Exact<{
@@ -3386,6 +3438,32 @@ export type GetOrderByCodeWithPaymentsQueryVariables = Exact<{
 }>;
 
 export type GetOrderByCodeWithPaymentsQuery = { orderByCode?: Maybe<TestOrderWithPaymentsFragment> };
+
+export type GetActiveCustomerOrderWithItemFulfillmentsQueryVariables = Exact<{
+    code: Scalars['String'];
+}>;
+
+export type GetActiveCustomerOrderWithItemFulfillmentsQuery = {
+    activeCustomer?: Maybe<{
+        orders: Pick<OrderList, 'totalItems'> & {
+            items: Array<
+                Pick<Order, 'id' | 'code' | 'state'> & {
+                    lines: Array<
+                        Pick<OrderLine, 'id'> & {
+                            items: Array<
+                                Pick<OrderItem, 'id'> & {
+                                    fulfillment?: Maybe<
+                                        Pick<Fulfillment, 'id' | 'state' | 'method' | 'trackingCode'>
+                                    >;
+                                }
+                            >;
+                        }
+                    >;
+                }
+            >;
+        };
+    }>;
+};
 
 export type GetNextOrderStatesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -3904,6 +3982,73 @@ export namespace GetOrderByCodeWithPayments {
     export type Variables = GetOrderByCodeWithPaymentsQueryVariables;
     export type Query = GetOrderByCodeWithPaymentsQuery;
     export type OrderByCode = NonNullable<GetOrderByCodeWithPaymentsQuery['orderByCode']>;
+}
+
+export namespace GetActiveCustomerOrderWithItemFulfillments {
+    export type Variables = GetActiveCustomerOrderWithItemFulfillmentsQueryVariables;
+    export type Query = GetActiveCustomerOrderWithItemFulfillmentsQuery;
+    export type ActiveCustomer = NonNullable<
+        GetActiveCustomerOrderWithItemFulfillmentsQuery['activeCustomer']
+    >;
+    export type Orders = NonNullable<
+        NonNullable<GetActiveCustomerOrderWithItemFulfillmentsQuery['activeCustomer']>['orders']
+    >;
+    export type Items = NonNullable<
+        NonNullable<
+            NonNullable<
+                NonNullable<GetActiveCustomerOrderWithItemFulfillmentsQuery['activeCustomer']>['orders']
+            >['items']
+        >[number]
+    >;
+    export type Lines = NonNullable<
+        NonNullable<
+            NonNullable<
+                NonNullable<
+                    NonNullable<
+                        NonNullable<
+                            GetActiveCustomerOrderWithItemFulfillmentsQuery['activeCustomer']
+                        >['orders']
+                    >['items']
+                >[number]
+            >['lines']
+        >[number]
+    >;
+    export type _Items = NonNullable<
+        NonNullable<
+            NonNullable<
+                NonNullable<
+                    NonNullable<
+                        NonNullable<
+                            NonNullable<
+                                NonNullable<
+                                    GetActiveCustomerOrderWithItemFulfillmentsQuery['activeCustomer']
+                                >['orders']
+                            >['items']
+                        >[number]
+                    >['lines']
+                >[number]
+            >['items']
+        >[number]
+    >;
+    export type Fulfillment = NonNullable<
+        NonNullable<
+            NonNullable<
+                NonNullable<
+                    NonNullable<
+                        NonNullable<
+                            NonNullable<
+                                NonNullable<
+                                    NonNullable<
+                                        GetActiveCustomerOrderWithItemFulfillmentsQuery['activeCustomer']
+                                    >['orders']
+                                >['items']
+                            >[number]
+                        >['lines']
+                    >[number]
+                >['items']
+            >[number]
+        >['fulfillment']
+    >;
 }
 
 export namespace GetNextOrderStates {

@@ -55,7 +55,8 @@ type InputListItem = {
     ],
 })
 export class DynamicFormInputComponent
-    implements OnInit, OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor {
+    implements OnInit, OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor
+{
     @Input() def: ConfigArgDefinition | CustomFieldConfig;
     @Input() readonly: boolean;
     @Input() control: FormControl;
@@ -148,6 +149,7 @@ export class DynamicFormInputComponent
                                 this.onChange(val);
                                 this.control.patchValue(val, { emitEvent: false });
                             });
+                        setTimeout(() => this.changeDetectorRef.markForCheck());
                     }
                 };
 
@@ -190,7 +192,7 @@ export class DynamicFormInputComponent
 
     private updateBindings(changes: SimpleChanges, componentRef: ComponentRef<FormInputComponent>) {
         if ('def' in changes) {
-            componentRef.instance.config = this.isConfigArgDef(this.def) ? this.def.ui : this.def;
+            componentRef.instance.config = simpleDeepClone(this.def);
         }
         if ('readonly' in changes) {
             componentRef.instance.readonly = this.readonly;
@@ -239,7 +241,7 @@ export class DynamicFormInputComponent
     ) {
         const componentRef = viewContainerRef.createComponent(factory);
         const { instance } = componentRef;
-        instance.config = simpleDeepClone(this.isConfigArgDef(this.def) ? this.def.ui : this.def);
+        instance.config = simpleDeepClone(this.def);
         instance.formControl = formControl;
         instance.readonly = this.readonly;
         componentRef.injector.get(ChangeDetectorRef).markForCheck();
@@ -278,9 +280,9 @@ export class DynamicFormInputComponent
         this.changeDetectorRef.markForCheck();
     }
 
-    private getInputComponentConfig(
-        argDef: ConfigArgDefinition | CustomFieldConfig,
-    ): { component: DefaultFormComponentId } {
+    private getInputComponentConfig(argDef: ConfigArgDefinition | CustomFieldConfig): {
+        component: DefaultFormComponentId;
+    } {
         if (this.hasUiConfig(argDef) && argDef.ui.component) {
             return argDef.ui;
         }

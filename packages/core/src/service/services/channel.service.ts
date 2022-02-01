@@ -26,6 +26,9 @@ import { Channel } from '../../entity/channel/channel.entity';
 import { ProductVariantPrice } from '../../entity/product-variant/product-variant-price.entity';
 import { Session } from '../../entity/session/session.entity';
 import { Zone } from '../../entity/zone/zone.entity';
+import { EventBus } from '../../event-bus';
+import { ChangeChannelEvent } from '../../event-bus/events/change-channel-event';
+import { ChannelEvent } from '../../event-bus/events/channel-event';
 import { CustomFieldRelationService } from '../helpers/custom-field-relation/custom-field-relation.service';
 import { patchEntity } from '../helpers/utils/patch-entity';
 
@@ -46,6 +49,7 @@ export class ChannelService {
         private configService: ConfigService,
         private globalSettingsService: GlobalSettingsService,
         private customFieldRelationService: CustomFieldRelationService,
+        private eventBus: EventBus,
     ) {}
 
     /**
@@ -56,7 +60,16 @@ export class ChannelService {
      */
     async initChannels() {
         await this.ensureDefaultChannelExists();
-        this.allChannels = await createSelfRefreshingCache({
+        await this.ensureCacheExists();
+    }
+
+    /**
+     * Creates a channels cache, that can be used to reduce number of channel queries to database 
+     *
+     * @internal
+     */
+    async createCache(): Promise<SelfRefreshingCache<Channel[], [RequestContext]>> {
+        return createSelfRefreshingCache({
             name: 'ChannelService.allChannels',
             ttl: this.configService.entityOptions.channelCacheTtl,
             refresh: { fn: ctx => this.findAll(ctx), defaultArgs: [RequestContext.empty()] },
@@ -68,10 +81,14 @@ export class ChannelService {
      * Assigns a ChannelAware entity to the default Channel as well as any channel
      * specified in the RequestContext.
      */
-    async assignToCurrentChannel<T extends ChannelAware>(entity: T, ctx: RequestContext): Promise<T> {
+    async assignToCurrentChannel<T extends ChannelAware & VendureEntity>(
+        entity: T,
+        ctx: RequestContext,
+    ): Promise<T> {
         const defaultChannel = await this.getDefaultChannel();
         const channelIds = unique([ctx.channelId, defaultChannel.id]);
         entity.channels = channelIds.map(id => ({ id })) as any;
+        this.eventBus.publish(new ChangeChannelEvent(ctx, entity, [ctx.channelId], 'assigned'));
         return entity;
     }
 
@@ -93,6 +110,7 @@ export class ChannelService {
             entity.channels.push(channel);
         }
         await this.connection.getRepository(ctx, entityType).save(entity as any, { reload: false });
+        this.eventBus.publish(new ChangeChannelEvent(ctx, entity, channelIds, 'assigned', entityType));
         return entity;
     }
 
@@ -116,6 +134,7 @@ export class ChannelService {
             entity.channels = entity.channels.filter(c => !idsAreEqual(c.id, id));
         }
         await this.connection.getRepository(ctx, entityType).save(entity as any, { reload: false });
+        this.eventBus.publish(new ChangeChannelEvent(ctx, entity, channelIds, 'removed', entityType));
         return entity;
     }
 
@@ -189,6 +208,7 @@ export class ChannelService {
         const newChannel = await this.connection.getRepository(ctx, Channel).save(channel);
         await this.customFieldRelationService.updateRelations(ctx, Channel, input, newChannel);
         await this.allChannels.refresh(ctx);
+        this.eventBus.publish(new ChannelEvent(ctx, newChannel, 'created', input));
         return channel;
     }
 
@@ -222,16 +242,19 @@ export class ChannelService {
         await this.connection.getRepository(ctx, Channel).save(updatedChannel, { reload: false });
         await this.customFieldRelationService.updateRelations(ctx, Channel, input, updatedChannel);
         await this.allChannels.refresh(ctx);
+        this.eventBus.publish(new ChannelEvent(ctx, channel, 'updated', input));
         return assertFound(this.findOne(ctx, channel.id));
     }
 
     async delete(ctx: RequestContext, id: ID): Promise<DeletionResponse> {
-        await this.connection.getEntityOrThrow(ctx, Channel, id);
+        const channel = await this.connection.getEntityOrThrow(ctx, Channel, id);
         await this.connection.getRepository(ctx, Session).delete({ activeChannelId: id });
         await this.connection.getRepository(ctx, Channel).delete(id);
         await this.connection.getRepository(ctx, ProductVariantPrice).delete({
             channelId: id,
         });
+        this.eventBus.publish(new ChannelEvent(ctx, channel, 'deleted', id));
+
         return {
             result: DeletionResult.DELETED,
         };
@@ -247,6 +270,17 @@ export class ChannelService {
         return !!this.connection.rawConnection
             .getMetadata(entityType)
             .relations.find(r => r.type === Channel && r.propertyName === 'channels');
+    }
+
+    /**
+     * Ensures channel cache exists. If not, this method creates one.
+     */
+    private async ensureCacheExists() {
+        if (this.allChannels) {
+            return
+        }
+
+        this.allChannels = await this.createCache();
     }
 
     /**

@@ -21,14 +21,15 @@ import { VendureEntity } from '../../entity/base/base.entity';
  * @docsCategory Common
  */
 export type EntityRelationPaths<T extends VendureEntity> =
+    | `customFields.${string}`
     | PathsToStringProps1<T>
     | Join<PathsToStringProps2<T>, '.'>
     | TripleDotPath;
 
 export type EntityRelationKeys<T extends VendureEntity> = {
-    [K in Extract<keyof T, string>]: T[K] extends VendureEntity
+    [K in Extract<keyof T, string>]: Required<T>[K] extends VendureEntity | null
         ? K
-        : T[K] extends VendureEntity[]
+        : Required<T>[K] extends VendureEntity[]
         ? K
         : never;
 }[Extract<keyof T, string>];

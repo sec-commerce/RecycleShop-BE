@@ -1,8 +1,7 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="../../core/typings.d.ts" />
-import { bootstrap, JobQueueService } from '@vendure/core';
+import { bootstrap, JobQueueService, Logger } from '@vendure/core';
 import { populate } from '@vendure/core/cli/populate';
-import { BaseProductRecord } from '@vendure/core/dist/data-import/providers/import-parser/import-parser';
 import { clearAllTables, populateCustomers } from '@vendure/testing';
 import stringify from 'csv-stringify';
 import fs from 'fs';
@@ -51,7 +50,7 @@ if (require.main === module) {
                     )
                     .then(async app => {
                         console.log('populating customers...');
-                        await populateCustomers(10, config, true);
+                        await populateCustomers(app, 10, message => Logger.error(message));
                         return app.close();
                     });
             } else {
@@ -132,7 +131,7 @@ async function isDatabasePopulated(): Promise<boolean> {
  * Generates a CSV file of test product data which can then be imported into Vendure.
  */
 function generateProductsCsv(productCount: number = 100): Promise<void> {
-    const result: BaseProductRecord[] = [];
+    const result: any[] = [];
 
     const stringifier = stringify({
         delimiter: ',',
@@ -166,7 +165,7 @@ function generateProductsCsv(productCount: number = 100): Promise<void> {
 }
 
 function generateMockData(productCount: number, writeFn: (row: string[]) => void) {
-    const headers: Array<keyof BaseProductRecord> = [
+    const headers: string[] = [
         'name',
         'slug',
         'description',
@@ -188,7 +187,7 @@ function generateMockData(productCount: number, writeFn: (row: string[]) => void
     const categories = getCategoryNames();
 
     for (let i = 1; i <= productCount; i++) {
-        const outputRow: BaseProductRecord = {
+        const outputRow = {
             name: `Product ${i}`,
             slug: `product-${i}`,
             description: generateProductDescription(),

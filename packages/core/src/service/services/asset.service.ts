@@ -15,8 +15,8 @@ import { omit } from '@vendure/common/lib/omit';
 import { ID, PaginatedList, Type } from '@vendure/common/lib/shared-types';
 import { notNullOrUndefined } from '@vendure/common/lib/shared-utils';
 import { unique } from '@vendure/common/lib/unique';
-import { ReadStream } from 'fs-extra';
 import { ReadStream as FSReadStream } from 'fs';
+import { ReadStream } from 'fs-extra';
 import mime from 'mime-types';
 import path from 'path';
 import { Readable, Stream } from 'stream';
@@ -51,11 +51,26 @@ import { TagService } from './tag.service';
 // tslint:disable-next-line:no-var-requires
 const sizeOf = require('image-size');
 
+/**
+ * @description
+ * Certain entities (Product, ProductVariant, Collection) use this interface
+ * to model a featured asset and then a list of assets with a defined order.
+ *
+ * @docsCategory services
+ * @docsPage AssetService
+ */
 export interface EntityWithAssets extends VendureEntity {
     featuredAsset: Asset | null;
     assets: OrderableAsset[];
 }
 
+/**
+ * @description
+ * Used when updating entities which implement {@link EntityWithAssets}.
+ *
+ * @docsCategory services
+ * @docsPage AssetService
+ */
 export interface EntityAssetInput {
     assetIds?: ID[] | null;
     featuredAssetId?: ID | null;
@@ -66,6 +81,7 @@ export interface EntityAssetInput {
  * Contains methods relating to {@link Asset} entities.
  *
  * @docsCategory services
+ * @docsWeight 0
  */
 @Injectable()
 export class AssetService {
@@ -152,6 +168,11 @@ export class AssetService {
         return (entityWithFeaturedAsset && entityWithFeaturedAsset.featuredAsset) || undefined;
     }
 
+    /**
+     * @description
+     * Returns the Assets of an entity which has a well-ordered list of Assets, such as Product,
+     * ProductVariant or Collection.
+     */
     async getEntityAssets<T extends EntityWithAssets>(
         ctx: RequestContext,
         entity: T,
@@ -216,6 +237,7 @@ export class AssetService {
     }
 
     /**
+     * @description
      * Updates the assets / featuredAsset of an entity, ensuring that only valid assetIds are used.
      */
     async updateEntityAssets<T extends EntityWithAssets>(
@@ -241,7 +263,12 @@ export class AssetService {
     }
 
     /**
-     * Create an Asset based on a file uploaded via the GraphQL API.
+     * @description
+     * Create an Asset based on a file uploaded via the GraphQL API. The file should be uploaded
+     * using the [GraphQL multipart request specification](https://github.com/jaydenseric/graphql-multipart-request-spec),
+     * e.g. using the [apollo-upload-client](https://github.com/jaydenseric/apollo-upload-client) npm package.
+     *
+     * See the [Uploading Files docs](/docs/developer-guide/uploading-files) for an example of usage.
      */
     async create(ctx: RequestContext, input: CreateAssetInput): Promise<CreateAssetResult> {
         return new Promise(async (resolve, reject) => {
@@ -250,13 +277,13 @@ export class AssetService {
             stream.on('error', (err: any) => {
                 reject(err);
             });
-            const result = await this.createAssetInternal(
-                ctx,
-                stream,
-                filename,
-                mimetype,
-                input.customFields,
-            );
+            let result: Asset | MimeTypeError;
+            try {
+                result = await this.createAssetInternal(ctx, stream, filename, mimetype, input.customFields);
+            } catch (e) {
+                reject(e);
+                return;
+            }
             if (isGraphQlErrorResult(result)) {
                 resolve(result);
                 return;
@@ -267,11 +294,15 @@ export class AssetService {
                 result.tags = tags;
                 await this.connection.getRepository(ctx, Asset).save(result);
             }
-            this.eventBus.publish(new AssetEvent(ctx, result, 'created'));
+            this.eventBus.publish(new AssetEvent(ctx, result, 'created', input));
             resolve(result);
         });
     }
 
+    /**
+     * @description
+     * Updates the name, focalPoint, tags & custom fields of an Asset.
+     */
     async update(ctx: RequestContext, input: UpdateAssetInput): Promise<Asset> {
         const asset = await this.connection.getEntityOrThrow(ctx, Asset, input.id);
         if (input.focalPoint) {
@@ -285,10 +316,15 @@ export class AssetService {
             asset.tags = await this.tagService.valuesToTags(ctx, input.tags);
         }
         const updatedAsset = await this.connection.getRepository(ctx, Asset).save(asset);
-        this.eventBus.publish(new AssetEvent(ctx, updatedAsset, 'updated'));
+        this.eventBus.publish(new AssetEvent(ctx, updatedAsset, 'updated', input));
         return updatedAsset;
     }
 
+    /**
+     * @description
+     * Deletes an Asset after performing checks to ensure that the Asset is not currently in use
+     * by a Product, ProductVariant or Collection.
+     */
     async delete(
         ctx: RequestContext,
         ids: ID[],
@@ -386,7 +422,8 @@ export class AssetService {
     }
 
     /**
-     * Create an Asset from a file stream created during data import.
+     * @description
+     * Create an Asset from a file stream, for example to create an Asset during data import.
      */
     async createFromFileStream(stream: ReadStream): Promise<CreateAssetResult>;
     async createFromFileStream(stream: Readable, filePath: string): Promise<CreateAssetResult>;
@@ -394,7 +431,8 @@ export class AssetService {
         stream: ReadStream | Readable,
         maybeFilePath?: string,
     ): Promise<CreateAssetResult> {
-        const filePath = stream instanceof ReadStream || stream instanceof FSReadStream ? stream.path : maybeFilePath;
+        const filePath =
+            stream instanceof ReadStream || stream instanceof FSReadStream ? stream.path : maybeFilePath;
         if (typeof filePath === 'string') {
             const filename = path.basename(filePath);
             const mimetype = mime.lookup(filename) || 'application/octet-stream';
@@ -405,6 +443,7 @@ export class AssetService {
     }
 
     /**
+     * @description
      * Unconditionally delete given assets.
      * Does not remove assets from channels
      */
@@ -420,7 +459,7 @@ export class AssetService {
             } catch (e) {
                 Logger.error(`error.could-not-delete-asset-file`, undefined, e.stack);
             }
-            this.eventBus.publish(new AssetEvent(ctx, deletedAsset, 'deleted'));
+            this.eventBus.publish(new AssetEvent(ctx, deletedAsset, 'deleted', deletedAsset.id));
         }
         return {
             result: DeletionResult.DELETED,
@@ -460,7 +499,7 @@ export class AssetService {
         try {
             preview = await assetPreviewStrategy.generatePreviewImage(ctx, mimetype, sourceFile);
         } catch (e) {
-            Logger.error(`Could not create Asset preview image: ${e.message}`);
+            Logger.error(`Could not create Asset preview image: ${e.message}`, undefined, e.stack);
             throw e;
         }
         const previewFileIdentifier = await assetStorageStrategy.writeFileFromBuffer(
