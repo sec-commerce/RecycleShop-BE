@@ -89,7 +89,7 @@
     "hooks": {
       "post-commit": "git update-index --again",
       "pre-commit": "lint-staged",
-      "pre-push": "yarn check-imports && yarn build"
+      "pre-push": "yarn check-imports"
     }
   }
 }
