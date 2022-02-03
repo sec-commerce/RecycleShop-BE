@@ -1,36 +1,28 @@
-import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { PluginCommonModule, VendurePlugin } from '@vendure/core';
-import { Ctx, ID, Product, RequestContext, User } from '@vendure/core';
-import gql from 'graphql-tag';
+import { PluginCommonModule, User, VendurePlugin } from '@vendure/core';
 
-@Resolver('Product')
-export class ProductEntityUserResolver {
-    @ResolveField()
-    user(@Ctx() ctx: RequestContext, @Parent() product: Product): User {
-        return ProductEntityUserResolver.getUserForProduct(ctx, product.id);
-    }
+// Override the resolver and attach the activeUserId from the context to the input.
 
-    private static getUserForProduct(ctx: RequestContext, id: ID): User {
-        return new User();
-    }
-}
+// @Transaction()
+// @Mutation()
+// @Allow(Permission.CreateCatalog, Permission.CreateProduct)
+// async createProduct(
+//     @Ctx() ctx: RequestContext,
+// @Args() args: MutationCreateProductArgs,
+// ): Promise<Translated<Product>> {
+//     const { input } = args;
+//     input.customFields = {user: { id: ctx.activeUserId}};
+//     return this.productService.create(ctx, input);
+// }
 
 @VendurePlugin({
     imports: [PluginCommonModule],
-    adminApiExtensions: {
-        schema: gql`
-            extend type Product {
-                user: User!
-            }
-        `,
-        resolvers: [ProductEntityUserResolver],
-    },
     configuration: config => {
         config.customFields.Product.push({
             type: 'relation',
             entity: User,
             graphQLType: 'User',
             eager: false,
+            readonly: true,
             name: 'user',
         });
         return config;

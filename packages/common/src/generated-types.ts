@@ -3665,33 +3665,38 @@ export type Product = Node & {
   name: Scalars['String'];
   slug: Scalars['String'];
   description: Scalars['String'];
-  featuredAsset?: Maybe<Asset>;
-  assets: Array<Asset>;
-  /** Returns all ProductVariants */
-  variants: Array<ProductVariant>;
-  /** Returns a paginated, sortable, filterable list of ProductVariants */
-  variantList: ProductVariantList;
-  optionGroups: Array<ProductOptionGroup>;
-  facetValues: Array<FacetValue>;
-  translations: Array<ProductTranslation>;
-  collections: Array<Collection>;
-  customFields?: Maybe<Scalars['JSON']>;
+    featuredAsset?: Maybe<Asset>;
+    assets: Array<Asset>;
+    /** Returns all ProductVariants */
+    variants: Array<ProductVariant>;
+    /** Returns a paginated, sortable, filterable list of ProductVariants */
+    variantList: ProductVariantList;
+    optionGroups: Array<ProductOptionGroup>;
+    facetValues: Array<FacetValue>;
+    translations: Array<ProductTranslation>;
+    collections: Array<Collection>;
+    customFields?: Maybe<ProductCustomFields>;
 };
 
 
 export type ProductVariantListArgs = {
-  options?: Maybe<ProductVariantListOptions>;
+    options?: Maybe<ProductVariantListOptions>;
+};
+
+export type ProductCustomFields = {
+    __typename?: 'ProductCustomFields';
+    user?: Maybe<User>;
 };
 
 export type ProductFilterParameter = {
-  enabled?: Maybe<BooleanOperators>;
-  id?: Maybe<IdOperators>;
-  createdAt?: Maybe<DateOperators>;
-  updatedAt?: Maybe<DateOperators>;
-  languageCode?: Maybe<StringOperators>;
-  name?: Maybe<StringOperators>;
-  slug?: Maybe<StringOperators>;
-  description?: Maybe<StringOperators>;
+    enabled?: Maybe<BooleanOperators>;
+    id?: Maybe<IdOperators>;
+    createdAt?: Maybe<DateOperators>;
+    updatedAt?: Maybe<DateOperators>;
+    languageCode?: Maybe<StringOperators>;
+    name?: Maybe<StringOperators>;
+    slug?: Maybe<StringOperators>;
+    description?: Maybe<StringOperators>;
 };
 
 export type ProductList = PaginatedList & {
@@ -3781,12 +3786,13 @@ export type ProductOptionTranslationInput = {
 };
 
 export type ProductSortParameter = {
-  id?: Maybe<SortOrder>;
-  createdAt?: Maybe<SortOrder>;
-  updatedAt?: Maybe<SortOrder>;
-  name?: Maybe<SortOrder>;
-  slug?: Maybe<SortOrder>;
-  description?: Maybe<SortOrder>;
+    id?: Maybe<SortOrder>;
+    createdAt?: Maybe<SortOrder>;
+    updatedAt?: Maybe<SortOrder>;
+    name?: Maybe<SortOrder>;
+    slug?: Maybe<SortOrder>;
+    description?: Maybe<SortOrder>;
+    user?: Maybe<SortOrder>;
 };
 
 export type ProductTranslation = {

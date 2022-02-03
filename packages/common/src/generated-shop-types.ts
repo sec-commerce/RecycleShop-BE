@@ -2386,11 +2386,16 @@ export type Product = Node & {
     facetValues: Array<FacetValue>;
     translations: Array<ProductTranslation>;
     collections: Array<Collection>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<ProductCustomFields>;
 };
 
 export type ProductVariantListArgs = {
     options?: Maybe<ProductVariantListOptions>;
+};
+
+export type ProductCustomFields = {
+    __typename?: 'ProductCustomFields';
+    user?: Maybe<User>;
 };
 
 export type ProductFilterParameter = {
@@ -2474,6 +2479,7 @@ export type ProductSortParameter = {
     name?: Maybe<SortOrder>;
     slug?: Maybe<SortOrder>;
     description?: Maybe<SortOrder>;
+    user?: Maybe<SortOrder>;
 };
 
 export type ProductTranslation = {
