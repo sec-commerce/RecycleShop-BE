@@ -1,6 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { MutationCreateProductArgs } from '@vendure/common/lib/generated-types';
-import { QueryProductsByUserIdArgs } from '@vendure/common/src/generated-types';
+import { MutationCreateProductArgs, QueryProductsByUserIdArgs } from '@vendure/common/lib/generated-types';
 import {
     Allow,
     Ctx,
