@@ -667,13 +667,17 @@ export type CreatePaymentMethodInput = {
     customFields?: Maybe<Scalars['JSON']>;
 };
 
+export type CreateProductCustomFieldsInput = {
+    userId?: Maybe<Scalars['ID']>;
+};
+
 export type CreateProductInput = {
     featuredAssetId?: Maybe<Scalars['ID']>;
     enabled?: Maybe<Scalars['Boolean']>;
     assetIds?: Maybe<Array<Scalars['ID']>>;
     facetValueIds?: Maybe<Array<Scalars['ID']>>;
     translations: Array<ProductTranslationInput>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<CreateProductCustomFieldsInput>;
 };
 
 export type CreateProductOptionGroupInput = {
@@ -3498,11 +3502,15 @@ export type Product = Node & {
     facetValues: Array<FacetValue>;
     translations: Array<ProductTranslation>;
     collections: Array<Collection>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<ProductCustomFields>;
 };
 
 export type ProductVariantListArgs = {
     options?: Maybe<ProductVariantListOptions>;
+};
+
+export type ProductCustomFields = {
+    user?: Maybe<User>;
 };
 
 export type ProductFilterParameter = {
@@ -3603,6 +3611,7 @@ export type ProductSortParameter = {
     name?: Maybe<SortOrder>;
     slug?: Maybe<SortOrder>;
     description?: Maybe<SortOrder>;
+    user?: Maybe<SortOrder>;
 };
 
 export type ProductTranslation = {
@@ -3858,6 +3867,7 @@ export type Query = {
     taxRate?: Maybe<TaxRate>;
     zones: Array<Zone>;
     zone?: Maybe<Zone>;
+    productsByUserId: ProductList;
 };
 
 export type QueryAdministratorsArgs = {
@@ -4036,6 +4046,11 @@ export type QueryTaxRateArgs = {
 };
 
 export type QueryZoneArgs = {
+    id: Scalars['ID'];
+};
+
+export type QueryProductsByUserIdArgs = {
+    options?: Maybe<ProductListOptions>;
     id: Scalars['ID'];
 };
 
@@ -4807,6 +4822,10 @@ export type UpdatePaymentMethodInput = {
     customFields?: Maybe<Scalars['JSON']>;
 };
 
+export type UpdateProductCustomFieldsInput = {
+    userId?: Maybe<Scalars['ID']>;
+};
+
 export type UpdateProductInput = {
     id: Scalars['ID'];
     enabled?: Maybe<Scalars['Boolean']>;
@@ -4814,7 +4833,7 @@ export type UpdateProductInput = {
     assetIds?: Maybe<Array<Scalars['ID']>>;
     facetValueIds?: Maybe<Array<Scalars['ID']>>;
     translations?: Maybe<Array<ProductTranslationInput>>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<UpdateProductCustomFieldsInput>;
 };
 
 export type UpdateProductOptionGroupInput = {
@@ -5247,7 +5266,9 @@ export type GetCustomerOrdersQueryVariables = Exact<{
 }>;
 
 export type GetCustomerOrdersQuery = {
-    customer?: Maybe<{ orders: Pick<OrderList, 'totalItems'> & { items: Array<Pick<Order, 'id'>> } }>;
+    customer?: Maybe<{
+        orders: Pick<OrderList, 'totalItems'> & { items: Array<Pick<Order, 'id'>> };
+    }>;
 };
 
 export type AddNoteToCustomerMutationVariables = Exact<{
@@ -5809,7 +5830,9 @@ export type GetAssetListQueryVariables = Exact<{
     options?: Maybe<AssetListOptions>;
 }>;
 
-export type GetAssetListQuery = { assets: Pick<AssetList, 'totalItems'> & { items: Array<AssetFragment> } };
+export type GetAssetListQuery = {
+    assets: Pick<AssetList, 'totalItems'> & { items: Array<AssetFragment> };
+};
 
 export type CreateRoleMutationVariables = Exact<{
     input: CreateRoleInput;
@@ -6085,7 +6108,9 @@ export type GetOrderListQueryVariables = Exact<{
     options?: Maybe<OrderListOptions>;
 }>;
 
-export type GetOrderListQuery = { orders: Pick<OrderList, 'totalItems'> & { items: Array<OrderFragment> } };
+export type GetOrderListQuery = {
+    orders: Pick<OrderList, 'totalItems'> & { items: Array<OrderFragment> };
+};
 
 export type CreateAddressMutationVariables = Exact<{
     id: Scalars['ID'];
@@ -6331,7 +6356,9 @@ export type GetAssetQueryVariables = Exact<{
     id: Scalars['ID'];
 }>;
 
-export type GetAssetQuery = { asset?: Maybe<Pick<Asset, 'width' | 'height'> & AssetFragment> };
+export type GetAssetQuery = {
+    asset?: Maybe<Pick<Asset, 'width' | 'height'> & AssetFragment>;
+};
 
 export type AssetFragFirstFragment = Pick<Asset, 'id' | 'preview'>;
 
@@ -6801,7 +6828,9 @@ export type GetRolesQueryVariables = Exact<{
     options?: Maybe<RoleListOptions>;
 }>;
 
-export type GetRolesQuery = { roles: Pick<RoleList, 'totalItems'> & { items: Array<RoleFragment> } };
+export type GetRolesQuery = {
+    roles: Pick<RoleList, 'totalItems'> & { items: Array<RoleFragment> };
+};
 
 export type GetRoleQueryVariables = Exact<{
     id: Scalars['ID'];

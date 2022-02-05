@@ -2308,11 +2308,15 @@ export type Product = Node & {
     facetValues: Array<FacetValue>;
     translations: Array<ProductTranslation>;
     collections: Array<Collection>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<ProductCustomFields>;
 };
 
 export type ProductVariantListArgs = {
     options?: Maybe<ProductVariantListOptions>;
+};
+
+export type ProductCustomFields = {
+    user?: Maybe<User>;
 };
 
 export type ProductFilterParameter = {
@@ -2391,6 +2395,7 @@ export type ProductSortParameter = {
     name?: Maybe<SortOrder>;
     slug?: Maybe<SortOrder>;
     description?: Maybe<SortOrder>;
+    user?: Maybe<SortOrder>;
 };
 
 export type ProductTranslation = {
@@ -3439,9 +3444,7 @@ export type GetOrderByCodeWithPaymentsQueryVariables = Exact<{
 
 export type GetOrderByCodeWithPaymentsQuery = { orderByCode?: Maybe<TestOrderWithPaymentsFragment> };
 
-export type GetActiveCustomerOrderWithItemFulfillmentsQueryVariables = Exact<{
-    code: Scalars['String'];
-}>;
+export type GetActiveCustomerOrderWithItemFulfillmentsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetActiveCustomerOrderWithItemFulfillmentsQuery = {
     activeCustomer?: Maybe<{

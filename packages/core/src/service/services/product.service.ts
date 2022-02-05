@@ -51,7 +51,7 @@ import { TaxRateService } from './tax-rate.service';
  */
 @Injectable()
 export class ProductService {
-    private readonly relations = ['featuredAsset',  'user', 'assets', 'channels', 'facetValues', 'facetValues.facet'];
+    private readonly relations = ['featuredAsset', 'assets', 'channels', 'facetValues', 'facetValues.facet'];
 
     constructor(
         private connection: TransactionalConnection,
@@ -80,6 +80,31 @@ export class ProductService {
                 where: { deletedAt: null },
                 ctx,
             })
+            .getManyAndCount()
+            .then(async ([products, totalItems]) => {
+                const items = products.map(product =>
+                    translateDeep(product, ctx.languageCode, ['facetValues', ['facetValues', 'facet']]),
+                );
+                return {
+                    items,
+                    totalItems,
+                };
+            });
+    }
+
+    async findAllByUserId(
+        ctx: RequestContext,
+        userId: ID,
+        options?: ListQueryOptions<Product>,
+    ): Promise<PaginatedList<Translated<Product>>> {
+        return this.listQueryBuilder
+            .build(Product, options, {
+                relations: this.relations,
+                channelId: ctx.channelId,
+                where: { deletedAt: null },
+                ctx,
+            })
+            .andWhere('userId = :userId', { userId })
             .getManyAndCount()
             .then(async ([products, totalItems]) => {
                 const items = products.map(product =>
@@ -179,7 +204,6 @@ export class ProductService {
 
     async create(ctx: RequestContext, input: CreateProductInput): Promise<Translated<Product>> {
         await this.slugValidator.validateSlugs(ctx, input, ProductTranslation);
-        input.user = ctx.activeUserId;
         const product = await this.translatableSaver.create({
             ctx,
             input,

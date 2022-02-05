@@ -32,7 +32,6 @@ export class ProductEntityResolver {
         private collectionService: CollectionService,
         private productOptionGroupService: ProductOptionGroupService,
         private assetService: AssetService,
-        private userService: UserService,
         private productService: ProductService,
         private localeStringHydrator: LocaleStringHydrator,
     ) {}
@@ -111,14 +110,6 @@ export class ProductEntityResolver {
             return product.featuredAsset;
         }
         return this.assetService.getFeaturedAsset(ctx, product);
-    }
-
-    @ResolveField()
-    async user(@Ctx() ctx: RequestContext, @Parent() product: Product): Promise<User | undefined> {
-        if (product.user) {
-            return product.user;
-        }
-        return this.userService.getUser(ctx, product.user);
     }
 
     @ResolveField()
