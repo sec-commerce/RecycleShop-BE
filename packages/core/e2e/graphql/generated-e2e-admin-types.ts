@@ -5252,7 +5252,9 @@ export type GetCustomerOrdersQueryVariables = Exact<{
 }>;
 
 export type GetCustomerOrdersQuery = {
-    customer?: Maybe<{ orders: Pick<OrderList, 'totalItems'> & { items: Array<Pick<Order, 'id'>> } }>;
+    customer?: Maybe<{
+        orders: Pick<OrderList, 'totalItems'> & { items: Array<Pick<Order, 'id'>> };
+    }>;
 };
 
 export type AddNoteToCustomerMutationVariables = Exact<{
@@ -5814,7 +5816,9 @@ export type GetAssetListQueryVariables = Exact<{
     options?: Maybe<AssetListOptions>;
 }>;
 
-export type GetAssetListQuery = { assets: Pick<AssetList, 'totalItems'> & { items: Array<AssetFragment> } };
+export type GetAssetListQuery = {
+    assets: Pick<AssetList, 'totalItems'> & { items: Array<AssetFragment> };
+};
 
 export type CreateRoleMutationVariables = Exact<{
     input: CreateRoleInput;
@@ -6090,7 +6094,9 @@ export type GetOrderListQueryVariables = Exact<{
     options?: Maybe<OrderListOptions>;
 }>;
 
-export type GetOrderListQuery = { orders: Pick<OrderList, 'totalItems'> & { items: Array<OrderFragment> } };
+export type GetOrderListQuery = {
+    orders: Pick<OrderList, 'totalItems'> & { items: Array<OrderFragment> };
+};
 
 export type CreateAddressMutationVariables = Exact<{
     id: Scalars['ID'];
@@ -6336,7 +6342,9 @@ export type GetAssetQueryVariables = Exact<{
     id: Scalars['ID'];
 }>;
 
-export type GetAssetQuery = { asset?: Maybe<Pick<Asset, 'width' | 'height'> & AssetFragment> };
+export type GetAssetQuery = {
+    asset?: Maybe<Pick<Asset, 'width' | 'height'> & AssetFragment>;
+};
 
 export type AssetFragFirstFragment = Pick<Asset, 'id' | 'preview'>;
 
@@ -6806,7 +6814,9 @@ export type GetRolesQueryVariables = Exact<{
     options?: Maybe<RoleListOptions>;
 }>;
 
-export type GetRolesQuery = { roles: Pick<RoleList, 'totalItems'> & { items: Array<RoleFragment> } };
+export type GetRolesQuery = {
+    roles: Pick<RoleList, 'totalItems'> & { items: Array<RoleFragment> };
+};
 
 export type GetRoleQueryVariables = Exact<{
     id: Scalars['ID'];

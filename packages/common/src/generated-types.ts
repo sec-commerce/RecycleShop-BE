@@ -3655,16 +3655,16 @@ export type PriceRange = {
 };
 
 export type Product = Node & {
-  __typename?: 'Product';
-  enabled: Scalars['Boolean'];
-  channels: Array<Channel>;
-  id: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-  languageCode: LanguageCode;
-  name: Scalars['String'];
-  slug: Scalars['String'];
-  description: Scalars['String'];
+    __typename?: 'Product';
+    enabled: Scalars['Boolean'];
+    channels: Array<Channel>;
+    id: Scalars['ID'];
+    createdAt: Scalars['DateTime'];
+    updatedAt: Scalars['DateTime'];
+    languageCode: LanguageCode;
+    name: Scalars['String'];
+    slug: Scalars['String'];
+    description: Scalars['String'];
     featuredAsset?: Maybe<Asset>;
     assets: Array<Asset>;
     /** Returns all ProductVariants */
