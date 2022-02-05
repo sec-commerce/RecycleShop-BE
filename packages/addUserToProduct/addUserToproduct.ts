@@ -1,8 +1,11 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MutationCreateProductArgs } from '@vendure/common/lib/generated-types';
+import { QueryProductsByUserIdArgs } from '@vendure/common/src/generated-types';
 import {
     Allow,
     Ctx,
+    ListQueryOptions,
+    PaginatedList,
     Permission,
     PluginCommonModule,
     Product,
@@ -13,6 +16,13 @@ import {
     User,
     VendurePlugin,
 } from '@vendure/core';
+import gql from 'graphql-tag';
+
+const schemaExtension = gql`
+    extend type Query {
+        productsByUserId(options: ProductListOptions, id: ID!): ProductList!
+    }
+`;
 
 @Resolver()
 class ProductResolver {
@@ -26,8 +36,28 @@ class ProductResolver {
         @Args() args: MutationCreateProductArgs,
     ): Promise<Translated<Product>> {
         const { input } = args;
-        input.customFields = { user: { id: ctx.activeUserId } };
+        input.customFields = { userId: ctx.activeUserId };
         return this.productService.create(ctx, input);
+    }
+
+    @Query()
+    async productsByUserId(
+        @Ctx() ctx: RequestContext,
+        @Args() args: QueryProductsByUserIdArgs,
+    ): Promise<PaginatedList<Translated<Product>>> {
+        if (args.id) {
+            const options: ListQueryOptions<Product> = {
+                ...args.options,
+                filter: {
+                    ...(args.options && args.options.filter),
+                    enabled: { eq: true },
+                },
+            };
+
+            return this.productService.findAllByUserId(ctx, args.id, options || undefined);
+        }
+
+        return this.productService.findAll(ctx, args.options || undefined);
     }
 }
 
@@ -35,6 +65,7 @@ class ProductResolver {
     imports: [PluginCommonModule],
     providers: [ProductService],
     adminApiExtensions: {
+        schema: schemaExtension,
         resolvers: [ProductResolver],
     },
     configuration: config => {

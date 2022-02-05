@@ -1651,6 +1651,47 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "productsByUserId",
+              "description": null,
+              "args": [
+                {
+                  "name": "options",
+                  "description": null,
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ProductListOptions",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "id",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "ID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ProductList",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -17172,8 +17213,8 @@
               "name": "customFields",
               "description": null,
               "type": {
-                "kind": "SCALAR",
-                "name": "JSON",
+                "kind": "INPUT_OBJECT",
+                "name": "CreateProductCustomFieldsInput",
                 "ofType": null
               },
               "defaultValue": null
@@ -17281,8 +17322,8 @@
               "name": "customFields",
               "description": null,
               "type": {
-                "kind": "SCALAR",
-                "name": "JSON",
+                "kind": "INPUT_OBJECT",
+                "name": "UpdateProductCustomFieldsInput",
                 "ofType": null
               },
               "defaultValue": null
@@ -37964,6 +38005,48 @@
           ],
           "inputFields": null,
           "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "CreateProductCustomFieldsInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "userId",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateProductCustomFieldsInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "userId",
+              "description": null,
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },

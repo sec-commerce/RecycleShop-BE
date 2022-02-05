@@ -667,13 +667,17 @@ export type CreatePaymentMethodInput = {
     customFields?: Maybe<Scalars['JSON']>;
 };
 
+export type CreateProductCustomFieldsInput = {
+    userId?: Maybe<Scalars['ID']>;
+};
+
 export type CreateProductInput = {
     featuredAssetId?: Maybe<Scalars['ID']>;
     enabled?: Maybe<Scalars['Boolean']>;
     assetIds?: Maybe<Array<Scalars['ID']>>;
     facetValueIds?: Maybe<Array<Scalars['ID']>>;
     translations: Array<ProductTranslationInput>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<CreateProductCustomFieldsInput>;
 };
 
 export type CreateProductOptionGroupInput = {
@@ -3863,6 +3867,7 @@ export type Query = {
     taxRate?: Maybe<TaxRate>;
     zones: Array<Zone>;
     zone?: Maybe<Zone>;
+    productsByUserId: ProductList;
 };
 
 export type QueryAdministratorsArgs = {
@@ -4041,6 +4046,11 @@ export type QueryTaxRateArgs = {
 };
 
 export type QueryZoneArgs = {
+    id: Scalars['ID'];
+};
+
+export type QueryProductsByUserIdArgs = {
+    options?: Maybe<ProductListOptions>;
     id: Scalars['ID'];
 };
 
@@ -4812,6 +4822,10 @@ export type UpdatePaymentMethodInput = {
     customFields?: Maybe<Scalars['JSON']>;
 };
 
+export type UpdateProductCustomFieldsInput = {
+    userId?: Maybe<Scalars['ID']>;
+};
+
 export type UpdateProductInput = {
     id: Scalars['ID'];
     enabled?: Maybe<Scalars['Boolean']>;
@@ -4819,7 +4833,7 @@ export type UpdateProductInput = {
     assetIds?: Maybe<Array<Scalars['ID']>>;
     facetValueIds?: Maybe<Array<Scalars['ID']>>;
     translations?: Maybe<Array<ProductTranslationInput>>;
-    customFields?: Maybe<Scalars['JSON']>;
+    customFields?: Maybe<UpdateProductCustomFieldsInput>;
 };
 
 export type UpdateProductOptionGroupInput = {

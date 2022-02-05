@@ -92,6 +92,31 @@ export class ProductService {
             });
     }
 
+    async findAllByUserId(
+        ctx: RequestContext,
+        userId: ID,
+        options?: ListQueryOptions<Product>,
+    ): Promise<PaginatedList<Translated<Product>>> {
+        return this.listQueryBuilder
+            .build(Product, options, {
+                relations: this.relations,
+                channelId: ctx.channelId,
+                where: { deletedAt: null },
+                ctx,
+            })
+            .andWhere('userId = :userId', { userId })
+            .getManyAndCount()
+            .then(async ([products, totalItems]) => {
+                const items = products.map(product =>
+                    translateDeep(product, ctx.languageCode, ['facetValues', ['facetValues', 'facet']]),
+                );
+                return {
+                    items,
+                    totalItems,
+                };
+            });
+    }
+
     async findOne(ctx: RequestContext, productId: ID): Promise<Translated<Product> | undefined> {
         const product = await this.connection.findOneInChannel(ctx, Product, productId, ctx.channelId, {
             relations: this.relations,

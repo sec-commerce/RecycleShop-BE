@@ -673,22 +673,26 @@ export type CreateGroupOptionInput = {
 };
 
 export type CreatePaymentMethodInput = {
-  name: Scalars['String'];
-  code: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  enabled: Scalars['Boolean'];
-  checker?: Maybe<ConfigurableOperationInput>;
-  handler: ConfigurableOperationInput;
-  customFields?: Maybe<Scalars['JSON']>;
+    name: Scalars['String'];
+    code: Scalars['String'];
+    description?: Maybe<Scalars['String']>;
+    enabled: Scalars['Boolean'];
+    checker?: Maybe<ConfigurableOperationInput>;
+    handler: ConfigurableOperationInput;
+    customFields?: Maybe<Scalars['JSON']>;
+};
+
+export type CreateProductCustomFieldsInput = {
+    userId?: Maybe<Scalars['ID']>;
 };
 
 export type CreateProductInput = {
-  featuredAssetId?: Maybe<Scalars['ID']>;
-  enabled?: Maybe<Scalars['Boolean']>;
-  assetIds?: Maybe<Array<Scalars['ID']>>;
-  facetValueIds?: Maybe<Array<Scalars['ID']>>;
-  translations: Array<ProductTranslationInput>;
-  customFields?: Maybe<Scalars['JSON']>;
+    featuredAssetId?: Maybe<Scalars['ID']>;
+    enabled?: Maybe<Scalars['Boolean']>;
+    assetIds?: Maybe<Array<Scalars['ID']>>;
+    facetValueIds?: Maybe<Array<Scalars['ID']>>;
+    translations: Array<ProductTranslationInput>;
+    customFields?: Maybe<CreateProductCustomFieldsInput>;
 };
 
 export type CreateProductOptionGroupInput = {
@@ -4092,26 +4096,27 @@ export type Query = {
   paymentMethodHandlers: Array<ConfigurableOperationDefinition>;
   paymentMethods: PaymentMethodList;
   pendingSearchIndexUpdates: Scalars['Int'];
-  /** Get a Product either by id or slug. If neither id nor slug is speicified, an error will result. */
-  product?: Maybe<Product>;
-  productOptionGroup?: Maybe<ProductOptionGroup>;
-  productOptionGroups: Array<ProductOptionGroup>;
-  /** Get a ProductVariant by id */
-  productVariant?: Maybe<ProductVariant>;
-  /** List ProductVariants either all or for the specific product. */
-  productVariants: ProductVariantList;
-  /** List Products */
-  products: ProductList;
-  promotion?: Maybe<Promotion>;
-  promotionActions: Array<ConfigurableOperationDefinition>;
-  promotionConditions: Array<ConfigurableOperationDefinition>;
-  promotions: PromotionList;
-  role?: Maybe<Role>;
-  roles: RoleList;
-  search: SearchResponse;
-  shippingCalculators: Array<ConfigurableOperationDefinition>;
-  shippingEligibilityCheckers: Array<ConfigurableOperationDefinition>;
-  shippingMethod?: Maybe<ShippingMethod>;
+    /** Get a Product either by id or slug. If neither id nor slug is speicified, an error will result. */
+    product?: Maybe<Product>;
+    productOptionGroup?: Maybe<ProductOptionGroup>;
+    productOptionGroups: Array<ProductOptionGroup>;
+    /** Get a ProductVariant by id */
+    productVariant?: Maybe<ProductVariant>;
+    /** List ProductVariants either all or for the specific product. */
+    productVariants: ProductVariantList;
+    /** List Products */
+    products: ProductList;
+    productsByUserId: ProductList;
+    promotion?: Maybe<Promotion>;
+    promotionActions: Array<ConfigurableOperationDefinition>;
+    promotionConditions: Array<ConfigurableOperationDefinition>;
+    promotions: PromotionList;
+    role?: Maybe<Role>;
+    roles: RoleList;
+    search: SearchResponse;
+    shippingCalculators: Array<ConfigurableOperationDefinition>;
+    shippingEligibilityCheckers: Array<ConfigurableOperationDefinition>;
+    shippingMethod?: Maybe<ShippingMethod>;
   shippingMethods: ShippingMethodList;
   tag: Tag;
   tags: TagList;
@@ -4266,23 +4271,29 @@ export type QueryProductVariantArgs = {
 
 
 export type QueryProductVariantsArgs = {
-  options?: Maybe<ProductVariantListOptions>;
-  productId?: Maybe<Scalars['ID']>;
+    options?: Maybe<ProductVariantListOptions>;
+    productId?: Maybe<Scalars['ID']>;
 };
 
 
 export type QueryProductsArgs = {
-  options?: Maybe<ProductListOptions>;
+    options?: Maybe<ProductListOptions>;
+};
+
+
+export type QueryProductsByUserIdArgs = {
+    options?: Maybe<ProductListOptions>;
+    id: Scalars['ID'];
 };
 
 
 export type QueryPromotionArgs = {
-  id: Scalars['ID'];
+    id: Scalars['ID'];
 };
 
 
 export type QueryPromotionsArgs = {
-  options?: Maybe<PromotionListOptions>;
+    options?: Maybe<PromotionListOptions>;
 };
 
 
@@ -5137,24 +5148,28 @@ export type UpdateOrderNoteInput = {
 };
 
 export type UpdatePaymentMethodInput = {
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  enabled?: Maybe<Scalars['Boolean']>;
-  checker?: Maybe<ConfigurableOperationInput>;
-  handler?: Maybe<ConfigurableOperationInput>;
-  customFields?: Maybe<Scalars['JSON']>;
+    id: Scalars['ID'];
+    name?: Maybe<Scalars['String']>;
+    code?: Maybe<Scalars['String']>;
+    description?: Maybe<Scalars['String']>;
+    enabled?: Maybe<Scalars['Boolean']>;
+    checker?: Maybe<ConfigurableOperationInput>;
+    handler?: Maybe<ConfigurableOperationInput>;
+    customFields?: Maybe<Scalars['JSON']>;
+};
+
+export type UpdateProductCustomFieldsInput = {
+    userId?: Maybe<Scalars['ID']>;
 };
 
 export type UpdateProductInput = {
-  id: Scalars['ID'];
-  enabled?: Maybe<Scalars['Boolean']>;
-  featuredAssetId?: Maybe<Scalars['ID']>;
-  assetIds?: Maybe<Array<Scalars['ID']>>;
-  facetValueIds?: Maybe<Array<Scalars['ID']>>;
-  translations?: Maybe<Array<ProductTranslationInput>>;
-  customFields?: Maybe<Scalars['JSON']>;
+    id: Scalars['ID'];
+    enabled?: Maybe<Scalars['Boolean']>;
+    featuredAssetId?: Maybe<Scalars['ID']>;
+    assetIds?: Maybe<Array<Scalars['ID']>>;
+    facetValueIds?: Maybe<Array<Scalars['ID']>>;
+    translations?: Maybe<Array<ProductTranslationInput>>;
+    customFields?: Maybe<UpdateProductCustomFieldsInput>;
 };
 
 export type UpdateProductOptionGroupInput = {
