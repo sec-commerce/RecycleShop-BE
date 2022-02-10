@@ -12,8 +12,8 @@ import {
 import path from 'path';
 import { ConnectionOptions } from 'typeorm';
 
-import { ProductUserPlugin } from '../addUserToProduct/addUserToproduct';
-import { ViewProduct } from '../viewProduct/viewProduct';
+import { ProductUserPlugin } from '../plugins/addUserToProduct/addUserToproduct';
+import { ViewProduct } from '../plugins/viewProduct/viewProduct';
 
 /**
  * Config settings used during development
