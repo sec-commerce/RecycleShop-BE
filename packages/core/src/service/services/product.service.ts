@@ -51,7 +51,14 @@ import { TaxRateService } from './tax-rate.service';
  */
 @Injectable()
 export class ProductService {
-    private readonly relations = ['featuredAsset', 'assets', 'channels', 'facetValues', 'facetValues.facet'];
+    private readonly relations = [
+        'featuredAsset',
+        'customFields.user',
+        'assets',
+        'channels',
+        'facetValues',
+        'facetValues.facet',
+    ];
 
     constructor(
         private connection: TransactionalConnection,
